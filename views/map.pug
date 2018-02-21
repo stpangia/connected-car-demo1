@@ -1,0 +1,55 @@
+extends layout
+
+block content
+  style.
+    #map {
+      width: 100%;
+      height: 500px;
+      margin: 20px auto;
+    }
+
+  h2 Parking Spot Heatmap
+
+  p See your parking activity over the past month
+
+  a(href='/logout')
+      | Logout
+
+  #map
+
+  script.
+    var map, heatmap;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: getCenter(),
+        zoom: 11
+      });
+
+      heatmap = new google.maps.visualization.HeatmapLayer({
+        data: getPoints(),
+        map: map
+      });      
+      
+    }
+
+    function getCenter() {
+      return {
+        lat: 40.714556, 
+        lng: -73.9423842
+      };
+    }
+
+    function getPoints() {
+      return [
+        new google.maps.LatLng(40.714556, -73.9423842),
+        new google.maps.LatLng(40.71, -73.941),
+        new google.maps.LatLng(40.711, -73.942),
+        new google.maps.LatLng(40.712, -73.943),
+        new google.maps.LatLng(40.713, -73.944),
+        new google.maps.LatLng(40.714, -73.945),
+        new google.maps.LatLng(40.715, -73.946),
+      ];
+    }
+
+  script(src='https://maps.googleapis.com/maps/api/js?key='+process.env.GOOGLE_MAPS_API_KEY+'&libraries=visualization&callback=initMap')
