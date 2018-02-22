@@ -1,13 +1,24 @@
+var deviceAdapter = require('../lib/deviceAdapter');
+
 exports.oauth_handshake = function(req, res) {
-    // Which device?
-    // device passed in req.params.device
+	// Initialize user's device via adapter
+  var device = deviceAdapter.getDevice(req.params.device);
 
-    // Query to retrieve token
-
-    // Set session var with token
-    // req.session.user_token = 'asdf';
-
-    res.redirect('/map');
+  // Get access token
+	device.getAccessToken(req.query.code)
+		.then(function(body) {
+			// Set session var with device info
+			req.session.device = {
+				type: device.name,
+				user_token: body.access_token
+			};
+			// Redirect to map view
+			res.redirect('/map');
+		})
+		.catch(function (err) {
+			console.log('error: ' + err )
+			return next(err);
+    });
 };
 
 exports.logout = function(req, res) {
